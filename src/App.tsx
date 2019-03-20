@@ -1,6 +1,8 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
+
+import React, { Component } from 'react';
+
+import logo from './logo.svg';
 
 class App extends Component {
   render() {
@@ -8,7 +10,7 @@ class App extends Component {
       <div className="App">
         <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
-          <p>
+          <p className="text-red">
             Edit <code>src/App.tsx</code> and save to reload.
           </p>
           <a
