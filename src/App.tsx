@@ -1,20 +1,77 @@
 import './App.css';
 
-import { map, random, range } from 'lodash';
+import axios from 'axios';
+import { capitalize, map, reverse, sortBy } from 'lodash';
 import React, { Component } from 'react';
 
 import { AppNavBar } from './components/AppNavBar';
 import { ImageCards } from './components/ImageCards';
+import { UnsplashImage } from './models/UnsplashImage';
 
-class App extends Component {
-  renderCards(index: number) {
+export interface IState {
+  imageCategory: string;
+  images: UnsplashImage[];
+}
+
+class App extends Component<{}, IState> {
+  state: IState = {
+    imageCategory: 'oldest',
+    images: []
+  };
+
+  componentDidMount() {
+    axios.get(`https://api.unsplash.com/photos`, {
+      headers: {
+        Authorization: `Client-ID ${process.env.REACT_APP_UNSPLASH_ACCESS_KEY}`
+      },
+      params: {
+        order_by: this.state.imageCategory,
+        per_page: 12
+      }
+    })
+      .then(response => response.data)
+      .then(images => {
+        console.log(sortBy(images, 'likes'));
+        this.setState({ images: reverse(sortBy(images, 'likes')) })
+      })
+      .catch(err => console.log(err));
+  }
+
+  onCategorySelect = (event: any) => {
+    this.setState({
+      imageCategory: event.target.id
+    });
+  }
+
+  componentDidUpdate(prevProps: any, prevState: IState) {
+    if(this.state.imageCategory !== prevState.imageCategory) {
+      axios.get(`https://api.unsplash.com/photos`, {
+      headers: {
+        Authorization: `Client-ID ${process.env.REACT_APP_UNSPLASH_ACCESS_KEY}`
+      },
+      params: {
+        order_by: this.state.imageCategory,
+        per_page: 12
+      }
+    })
+      .then(response => response.data)
+      .then(images => {
+        console.log(sortBy(images, 'likes'));
+        this.setState({ images: reverse(sortBy(images, 'likes')) })
+      })
+      .catch(err => console.log(err));
+    }
+  }
+
+  renderCards(image: UnsplashImage, index: number) {
     return(
       <ImageCards
+        key={image.id}
         index={index}
-        srcURI={'https://tailwindcss.com/img/card-top.jpg'}
-        altText={'Sunset in the mountains'}
-        caption={'The Coldest Sunset'}
-        likes={String(random(100, 1000))}
+        srcURI={image.urls.small}
+        altText={capitalize(image.alt_description)}
+        caption={capitalize(image.description)}
+        likes={image.likes}
       />
     );
   }
@@ -22,10 +79,10 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <AppNavBar/>
-        <div className="container-fluid inline-flex flex-wrap">
-          {map(range(1, 25, 1), (x) => this.renderCards(x))}
-        </div>
+        <AppNavBar onSelect={this.onCategorySelect}/>
+            <div className="container-fluid inline-flex flex-wrap">
+              {map(this.state.images, (image, index) => this.renderCards(image, index))}
+            </div>
       </div>
     );
   }

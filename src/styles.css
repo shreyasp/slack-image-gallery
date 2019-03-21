@@ -28593,3 +28593,8 @@
 .overpass {
   font-family: 'Overpass', sans-serif;
 }
+
+.img-card-size {
+  max-width: 280px;
+  height: 187px;
+}
