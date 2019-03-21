@@ -28588,3 +28588,8 @@
       z-index: auto;
     }
   }
+
+/* Custom Google font */
+.overpass {
+  font-family: 'Overpass', sans-serif;
+}
