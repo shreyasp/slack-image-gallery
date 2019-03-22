@@ -1,10 +1,14 @@
 import "./App.css";
 
-import { faExclamationCircle } from "@fortawesome/free-solid-svg-icons";
+import {
+  faAngleDoubleUp,
+  faExclamationCircle
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { capitalize, clone, isEqual, map, reverse, sortBy } from "lodash";
 import React, { Component } from "react";
 import { Alert } from "react-bootstrap";
+import { Button } from "react-bootstrap";
 import { BeatLoader } from "react-spinners";
 
 import { AppNavBar } from "./components/AppNavBar";
@@ -18,6 +22,7 @@ export interface IState {
   error: Error | undefined;
   page: number;
   hasLoaded: boolean;
+  scrolled: boolean;
 }
 
 class App extends Component<{}, IState> {
@@ -26,7 +31,8 @@ class App extends Component<{}, IState> {
     images: [],
     error: undefined,
     page: 1,
-    hasLoaded: false
+    hasLoaded: false,
+    scrolled: false
   };
 
   onCategorySelect = (event: any) => {
@@ -87,6 +93,12 @@ class App extends Component<{}, IState> {
     window.removeEventListener("scroll", this.handleScroll);
   }
 
+  scrollToTop = () => {
+    document.body.scrollTop = 0; // For Safari
+    document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+    this.setState({ scrolled: false });
+  };
+
   handleScroll = () => {
     let scrollTop =
       (document.documentElement && document.documentElement.scrollTop) ||
@@ -113,7 +125,8 @@ class App extends Component<{}, IState> {
           this.setState({
             images,
             page,
-            hasLoaded: true
+            hasLoaded: true,
+            scrolled: true
           });
         })
         .catch(error => this.setState({ error }));
@@ -162,9 +175,22 @@ class App extends Component<{}, IState> {
         </div>
       );
     } else {
+      const buttonDisplay = {
+        display: this.state.scrolled ? "block" : "none"
+      };
       return (
         <div className="App">
           <AppNavBar onSelect={this.onCategorySelect} />
+          <div>
+            <Button
+              className="overlay-button bg-black rounded-full h-16 w-16 flex items-center justify-center"
+              size="lg"
+              style={buttonDisplay}
+              onClick={this.scrollToTop}
+            >
+              <FontAwesomeIcon icon={faAngleDoubleUp} />
+            </Button>
+          </div>
           <div className="container-fluid inline-flex flex-wrap">
             {map(this.state.images, (image, index) =>
               this.renderCards(image, index)
