@@ -9,44 +9,44 @@ export interface IProps {
 
 const AppNavBar: React.SFC<IProps> = props => {
   return (
-    <Navbar className="flex items-center flex-no-shrink text-white m-auto md:mr-6 bg-dark sticky-top overpass">
-      <Navbar.Brand>
-        <img className="fill-current w-8 h-8 mr-2" src={slackLogo} />
-        <span className="text-xl tracking-tight text-white text-semibold">
+    <nav className="flex items-center justify-between flex-wrap bg-black px-4 py-3 sticky-top overpass">
+      <div className="flex items-center flex-no-shrink text-white m-auto md:mr-6">
+        <img
+          className="fill-current w-8 h-8 mr-2"
+          height={54}
+          width={54}
+          src={slackLogo}
+        />
+        <span className="font-semibold text-md tracking-tight">
           Unsplash Gallery
         </span>
-      </Navbar.Brand>
-      <Navbar.Toggle aria-controls="basic-navbar-nav" />
-      <Nav className="w-full flex flex-grow md:justify-end md:mt-0 justify-center mt-2 md:w-auto">
-        <Nav.Link className="text-white">
+      </div>
+      <div className="w-full flex flex-grow md:justify-end md:mt-0 justify-center mt-2 md:w-auto">
+        <div className="text-sm">
           <Button
             id="oldest"
-            className="bg-transparent border-white shadow"
+            className="ml-2 px-4 py-2 leading-none bg-grey-darkest border rounded text-grey border-grey-darkest hover:border-transparent hover:text-white hover:bg-grey-darkest"
             onClick={props.onSelect}
           >
             Oldest
           </Button>
-        </Nav.Link>
-        <Nav.Link className="text-white">
           <Button
             id="latest"
-            className="bg-transparent border-white shadow"
+            className="ml-2 px-4 py-2 leading-none bg-grey-darkest border rounded text-grey border-grey-darkest hover:border-transparent hover:text-white hover:bg-grey-darkest"
             onClick={props.onSelect}
           >
             Latest
           </Button>
-        </Nav.Link>
-        <Nav.Link className="text-white">
           <Button
             id="popular"
-            className="bg-transparent border-white shadow"
+            className="ml-2 px-4 py-2 leading-none bg-grey-darkest border rounded text-grey border-grey-darkest hover:border-transparent hover:text-white hover:bg-grey-darkest"
             onClick={props.onSelect}
           >
             Popular
           </Button>
-        </Nav.Link>
-      </Nav>
-    </Navbar>
+        </div>
+      </div>
+    </nav>
   );
 };
 

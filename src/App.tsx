@@ -227,7 +227,6 @@ class App extends Component<{}, IState> {
           <div>
             <Button
               className="overlay-button bg-black rounded-full h-16 w-16 flex items-center justify-center"
-              size="lg"
               style={buttonDisplay}
               onClick={this.scrollToTop}
             >
