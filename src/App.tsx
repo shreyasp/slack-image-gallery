@@ -1,14 +1,16 @@
-import './App.css';
+import "./App.css";
 
-import { capitalize, clone, isEqual, map, reverse, sortBy } from 'lodash';
-import React, { Component } from 'react';
-import { Alert } from 'react-bootstrap';
-import { BeatLoader } from 'react-spinners';
+import { faExclamationCircle } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { capitalize, clone, isEqual, map, reverse, sortBy } from "lodash";
+import React, { Component } from "react";
+import { Alert } from "react-bootstrap";
+import { BeatLoader } from "react-spinners";
 
-import { AppNavBar } from './components/AppNavBar';
-import { ImageCards } from './components/ImageCards';
-import { fetchImages } from './fetch/FetchImage';
-import { UnsplashImage } from './models/UnsplashImage';
+import { AppNavBar } from "./components/AppNavBar";
+import { ImageCards } from "./components/ImageCards";
+import { fetchImages } from "./fetch/FetchImage";
+import { UnsplashImage } from "./models/UnsplashImage";
 
 export interface IState {
   imageCategory: string;
@@ -20,7 +22,7 @@ export interface IState {
 
 class App extends Component<{}, IState> {
   state: IState = {
-    imageCategory: 'oldest',
+    imageCategory: "oldest",
     images: [],
     error: undefined,
     page: 1,
@@ -35,17 +37,16 @@ class App extends Component<{}, IState> {
       page: 1,
       hasLoaded: false
     });
-  }
+  };
 
   componentDidMount() {
     fetchImages(this.state.imageCategory, this.state.page)
       .then(fetchedImages => {
-        let { images, page } = clone(this.state)
+        let { images, page } = clone(this.state);
 
         images = images.concat(fetchedImages);
-        images = reverse(sortBy(images, "likes"))
-        page += 1
-
+        images = reverse(sortBy(images, "likes"));
+        page += 1;
 
         this.setState({
           images,
@@ -55,23 +56,22 @@ class App extends Component<{}, IState> {
       })
       .catch(error => this.setState({ error }));
 
-    window.addEventListener('scroll', this.handleScroll);
+    window.addEventListener("scroll", this.handleScroll);
   }
 
   componentDidUpdate(prevProps: any, prevState: IState) {
-    if(
-        (
-          this.state.imageCategory !== prevState.imageCategory ||
-          !isEqual(this.state.images, prevState.images)
-        ) && !this.state.hasLoaded
-      ) {
+    if (
+      (this.state.imageCategory !== prevState.imageCategory ||
+        !isEqual(this.state.images, prevState.images)) &&
+      !this.state.hasLoaded
+    ) {
       fetchImages(this.state.imageCategory)
         .then(fetchedImages => {
-          let { images, page } = clone(this.state)
+          let { images, page } = clone(this.state);
 
           images = images.concat(fetchedImages);
-          images = reverse(sortBy(images, "likes"))
-          page += 1
+          images = reverse(sortBy(images, "likes"));
+          page += 1;
 
           this.setState({
             images,
@@ -84,32 +84,31 @@ class App extends Component<{}, IState> {
   }
 
   componentWillUnmount() {
-    window.removeEventListener('scroll', this.handleScroll);
+    window.removeEventListener("scroll", this.handleScroll);
   }
 
   handleScroll = () => {
-    var scrollTop = (
-      (
-        document.documentElement && document.documentElement.scrollTop
-      ) || document.body.scrollTop
-    );
+    let scrollTop =
+      (document.documentElement && document.documentElement.scrollTop) ||
+      document.body.scrollTop;
 
-    var scrollHeight = (
-      (
-        document.documentElement && document.documentElement.scrollHeight
-      ) || document.body.scrollHeight
-    );
-    var clientHeight = document.documentElement.clientHeight || window.innerHeight;
-    var scrolledToBottom = Math.ceil(scrollTop + clientHeight) >= scrollHeight;
+    let scrollHeight =
+      (document.documentElement && document.documentElement.scrollHeight) ||
+      document.body.scrollHeight;
 
-    if(scrolledToBottom) {
+    let clientHeight =
+      document.documentElement.clientHeight || window.innerHeight;
+
+    let scrolledToBottom = Math.ceil(scrollTop + clientHeight) >= scrollHeight;
+
+    if (scrolledToBottom) {
       fetchImages(this.state.imageCategory, this.state.page)
         .then(fetchedImages => {
-          let { images, page } = clone(this.state)
+          let { images, page } = clone(this.state);
 
           images = images.concat(fetchedImages);
-          images = reverse(sortBy(images, "likes"))
-          page += 1
+          images = reverse(sortBy(images, "likes"));
+          page += 1;
 
           this.setState({
             images,
@@ -119,10 +118,10 @@ class App extends Component<{}, IState> {
         })
         .catch(error => this.setState({ error }));
     }
-  }
+  };
 
   renderCards(image: UnsplashImage, index: number) {
-    return(
+    return (
       <ImageCards
         key={`${image.id}-${index}`}
         index={index}
@@ -135,35 +134,29 @@ class App extends Component<{}, IState> {
   }
 
   render() {
-    if(this.state.error) {
+    if (this.state.error) {
       return (
         <div>
-          <AppNavBar/>
+          <AppNavBar />
           <div>
-            <Alert
-              variant="danger"
-              dismissible={true}
-              className="border border-red-light m-3 px-4 py-3 rounded relative overpass"
-            >
-              {'Something went wrong while trying to fetch images. '}
-              <strong>
-                {`${this.state.error.message}`}
-              </strong>
+            <Alert className="text-black border-l-4 border-red-light m-3 px-4 py-3 relative overpass">
+              <FontAwesomeIcon className="mr-2" icon={faExclamationCircle} />
+              {"Something went wrong while trying to fetch images. "}
+              <strong>{`${this.state.error.message}`}</strong>
             </Alert>
           </div>
         </div>
-      )
-    }
-    else if (!this.state.hasLoaded) {
+      );
+    } else if (!this.state.hasLoaded) {
       return (
         <div>
-          <AppNavBar/>
+          <AppNavBar />
           <span className="centered">
             <BeatLoader
               loading={!this.state.hasLoaded}
               sizeUnit={"px"}
               size={20}
-              color={'#22292f'}
+              color={"#22292f"}
             />
           </span>
         </div>
@@ -171,10 +164,12 @@ class App extends Component<{}, IState> {
     } else {
       return (
         <div className="App">
-          <AppNavBar onSelect={this.onCategorySelect}/>
-              <div className="container-fluid inline-flex flex-wrap">
-                {map(this.state.images, (image, index) => this.renderCards(image, index))}
-              </div>
+          <AppNavBar onSelect={this.onCategorySelect} />
+          <div className="container-fluid inline-flex flex-wrap">
+            {map(this.state.images, (image, index) =>
+              this.renderCards(image, index)
+            )}
+          </div>
         </div>
       );
     }
