@@ -3,19 +3,24 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
 import { Card } from "react-bootstrap";
 
+import { UnsplashImage } from "../models/UnsplashImage";
+
 export interface IProps {
+  imageId: string;
   index: number;
   srcURI: string;
   altText: string;
   caption: string;
   likes?: number;
+  onCardClick?: (event: any) => void;
 }
 
 class ImageCards extends React.Component<IProps, {}> {
   render() {
     return (
-      <Card className="w-1/5 m-4 shadow-lg">
+      <Card className="w-1/5 m-4 shadow-lg" onClick={this.props.onCardClick}>
         <Card.Img
+          id={this.props.imageId}
           className="img-card-size"
           variant="top"
           src={this.props.srcURI}

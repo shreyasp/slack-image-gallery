@@ -2,13 +2,22 @@ import "./App.css";
 
 import {
   faAngleDoubleUp,
+  faChevronLeft,
+  faChevronRight,
   faExclamationCircle
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { capitalize, clone, isEqual, map, reverse, sortBy } from "lodash";
+import {
+  capitalize,
+  clone,
+  findIndex,
+  isEqual,
+  map,
+  reverse,
+  sortBy
+} from "lodash";
 import React, { Component } from "react";
-import { Alert } from "react-bootstrap";
-import { Button } from "react-bootstrap";
+import { Alert, Button, Modal } from "react-bootstrap";
 import { BeatLoader } from "react-spinners";
 
 import { AppNavBar } from "./components/AppNavBar";
@@ -23,6 +32,8 @@ export interface IState {
   page: number;
   hasLoaded: boolean;
   scrolled: boolean;
+  openBox: boolean;
+  currentImage: UnsplashImage | undefined;
 }
 
 class App extends Component<{}, IState> {
@@ -32,7 +43,9 @@ class App extends Component<{}, IState> {
     error: undefined,
     page: 1,
     hasLoaded: false,
-    scrolled: false
+    scrolled: false,
+    openBox: false,
+    currentImage: undefined
   };
 
   onCategorySelect = (event: any) => {
@@ -99,6 +112,16 @@ class App extends Component<{}, IState> {
     this.setState({ scrolled: false });
   };
 
+  onCardClick = (event: any) => {
+    const imageId: string = event.target.id;
+    const index = findIndex(this.state.images, image => image.id === imageId);
+
+    this.setState({
+      openBox: true,
+      currentImage: this.state.images[index]
+    });
+  };
+
   handleScroll = () => {
     let scrollTop =
       (document.documentElement && document.documentElement.scrollTop) ||
@@ -133,15 +156,21 @@ class App extends Component<{}, IState> {
     }
   };
 
+  modalClosed = () => {
+    this.setState({ openBox: false });
+  };
+
   renderCards(image: UnsplashImage, index: number) {
     return (
       <ImageCards
         key={`${image.id}-${index}`}
         index={index}
+        imageId={image.id}
         srcURI={image.urls.small}
         altText={capitalize(image.alt_description)}
         caption={capitalize(image.description)}
         likes={image.likes}
+        onCardClick={this.onCardClick}
       />
     );
   }
@@ -196,6 +225,36 @@ class App extends Component<{}, IState> {
               this.renderCards(image, index)
             )}
           </div>
+          {this.state.openBox && (
+            <div>
+              <Modal
+                show={this.state.openBox}
+                onHide={this.modalClosed}
+                centered={true}
+                size="lg"
+              >
+                <Modal.Body>
+                  <div>
+                    <Button className="bg-transparent border-transparent prev-button">
+                      <FontAwesomeIcon icon={faChevronLeft} size="2x" />
+                    </Button>
+                    <span>
+                      <img
+                        className="img-responsive max-w-full max-h-full"
+                        src={
+                          this.state.currentImage &&
+                          this.state.currentImage.urls.full
+                        }
+                      />
+                    </span>
+                    <Button className="bg-transparent border-transparent next-button">
+                      <FontAwesomeIcon icon={faChevronRight} size="2x" />
+                    </Button>
+                  </div>
+                </Modal.Body>
+              </Modal>
+            </div>
+          )}
         </div>
       );
     }
