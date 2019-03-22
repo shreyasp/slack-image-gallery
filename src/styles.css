@@ -28598,3 +28598,9 @@
   max-width: 280px;
   height: 187px;
 }
+
+.centered {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+}

@@ -1,8 +1,9 @@
 import './App.css';
 
-import { capitalize, clone, map, reverse, sortBy } from 'lodash';
+import { capitalize, clone, isEqual, map, reverse, sortBy } from 'lodash';
 import React, { Component } from 'react';
 import { Alert } from 'react-bootstrap';
+import { BeatLoader } from 'react-spinners';
 
 import { AppNavBar } from './components/AppNavBar';
 import { ImageCards } from './components/ImageCards';
@@ -14,6 +15,7 @@ export interface IState {
   images: UnsplashImage[];
   error: Error | undefined;
   page: number;
+  hasLoaded: boolean;
 }
 
 class App extends Component<{}, IState> {
@@ -21,7 +23,8 @@ class App extends Component<{}, IState> {
     imageCategory: 'oldest',
     images: [],
     error: undefined,
-    page: 1
+    page: 1,
+    hasLoaded: false
   };
 
   onCategorySelect = (event: any) => {
@@ -29,7 +32,8 @@ class App extends Component<{}, IState> {
       imageCategory: event.target.id,
       images: [],
       error: undefined,
-      page: 1
+      page: 1,
+      hasLoaded: false
     });
   }
 
@@ -45,7 +49,8 @@ class App extends Component<{}, IState> {
 
         this.setState({
           images,
-          page
+          page,
+          hasLoaded: true
         });
       })
       .catch(error => this.setState({ error }));
@@ -54,7 +59,12 @@ class App extends Component<{}, IState> {
   }
 
   componentDidUpdate(prevProps: any, prevState: IState) {
-    if(this.state.imageCategory !== prevState.imageCategory) {
+    if(
+        (
+          this.state.imageCategory !== prevState.imageCategory ||
+          !isEqual(this.state.images, prevState.images)
+        ) && !this.state.hasLoaded
+      ) {
       fetchImages(this.state.imageCategory)
         .then(fetchedImages => {
           let { images, page } = clone(this.state)
@@ -65,7 +75,8 @@ class App extends Component<{}, IState> {
 
           this.setState({
             images,
-            page
+            page,
+            hasLoaded: true
           });
         })
         .catch(error => this.setState({ error }));
@@ -102,7 +113,8 @@ class App extends Component<{}, IState> {
 
           this.setState({
             images,
-            page
+            page,
+            hasLoaded: true
           });
         })
         .catch(error => this.setState({ error }));
@@ -142,11 +154,25 @@ class App extends Component<{}, IState> {
         </div>
       )
     }
-    else {
+    else if (!this.state.hasLoaded) {
+      return (
+        <div>
+          <AppNavBar/>
+          <span className="centered">
+            <BeatLoader
+              loading={!this.state.hasLoaded}
+              sizeUnit={"px"}
+              size={20}
+              color={'#22292f'}
+            />
+          </span>
+        </div>
+      );
+    } else {
       return (
         <div className="App">
           <AppNavBar onSelect={this.onCategorySelect}/>
-              <div className="items-center content-center container-fluid inline-flex flex-wrap">
+              <div className="container-fluid inline-flex flex-wrap">
                 {map(this.state.images, (image, index) => this.renderCards(image, index))}
               </div>
         </div>
