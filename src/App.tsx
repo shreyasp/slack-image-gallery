@@ -7,15 +7,7 @@ import {
   faExclamationCircle
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  capitalize,
-  clone,
-  findIndex,
-  isEqual,
-  map,
-  reverse,
-  sortBy
-} from "lodash";
+import { capitalize, clone, findIndex, isEqual, map } from "lodash";
 import React, { Component } from "react";
 import { Alert, Button, Modal } from "react-bootstrap";
 import { BeatLoader } from "react-spinners";
@@ -54,7 +46,8 @@ class App extends Component<{}, IState> {
       images: [],
       error: undefined,
       page: 1,
-      hasLoaded: false
+      hasLoaded: false,
+      scrolled: false
     });
   };
 
@@ -64,7 +57,7 @@ class App extends Component<{}, IState> {
         let { images, page } = clone(this.state);
 
         images = images.concat(fetchedImages);
-        images = reverse(sortBy(images, "likes"));
+        images = images;
         page += 1;
 
         this.setState({
@@ -89,7 +82,7 @@ class App extends Component<{}, IState> {
           let { images, page } = clone(this.state);
 
           images = images.concat(fetchedImages);
-          images = reverse(sortBy(images, "likes"));
+          images = images;
           page += 1;
 
           this.setState({
@@ -122,11 +115,11 @@ class App extends Component<{}, IState> {
     });
   };
 
-  onPrevButtonClicked = (event: any) => {
+  onPrevButtonClicked = () => {
     this.setState({ currentImageIndex: this.state.currentImageIndex - 1 });
   };
 
-  onNextButtonClicked = (event: any) => {
+  onNextButtonClicked = () => {
     this.setState({ currentImageIndex: this.state.currentImageIndex + 1 });
   };
 
@@ -150,7 +143,7 @@ class App extends Component<{}, IState> {
           let { images, page } = clone(this.state);
 
           images = images.concat(fetchedImages);
-          images = reverse(sortBy(images, "likes"));
+          images = images;
           page += 1;
 
           this.setState({
@@ -161,6 +154,8 @@ class App extends Component<{}, IState> {
           });
         })
         .catch(error => this.setState({ error }));
+    } else if (!scrollTop) {
+      this.setState({ scrolled: false });
     }
   };
 
@@ -178,6 +173,7 @@ class App extends Component<{}, IState> {
         altText={capitalize(image.alt_description)}
         caption={capitalize(image.description)}
         likes={image.likes}
+        userName={image.user.first_name}
         onCardClick={this.onCardClick}
       />
     );
@@ -222,7 +218,8 @@ class App extends Component<{}, IState> {
       );
     } else {
       const buttonDisplay = {
-        display: this.state.scrolled ? "block" : "none"
+        display:
+          this.state.scrolled || document.body.scrollTop ? "block" : "none"
       };
       return (
         <div className="App">
@@ -237,7 +234,7 @@ class App extends Component<{}, IState> {
               <FontAwesomeIcon icon={faAngleDoubleUp} />
             </Button>
           </div>
-          <div className="container-fluid inline-flex flex-wrap">
+          <div className="w-full lg:max-w-3xl mx-auto flex flex-wrap px-3 mt-6">
             {map(this.state.images, (image, index) =>
               this.renderCards(image, index)
             )}
@@ -253,7 +250,7 @@ class App extends Component<{}, IState> {
                 <Modal.Body>
                   <div>
                     <Button
-                      className="bg-transparent border-transparent prev-button hover:bg-transparent"
+                      className="bg-grey-light border-transparent prev-button hover:bg-grey-dark"
                       style={prevButtonHide}
                       onClick={this.onPrevButtonClicked}
                     >
@@ -266,7 +263,7 @@ class App extends Component<{}, IState> {
                       />
                     </span>
                     <Button
-                      className="bg-transparent border-transparent next-button hover:bg-transparent"
+                      className="bg-grey-light border-transparent next-button hover:bg-grey-dark"
                       style={nextButtonHide}
                       onClick={this.onNextButtonClicked}
                     >

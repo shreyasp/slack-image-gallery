@@ -28664,3 +28664,15 @@ code {
   z-index: 1080;
   display: block;
 }
+
+.image-card {
+  -webkit-transition: box-shadow 400ms ease, -webkit-transform 400ms ease;
+  transition: box-shadow 400ms ease, -webkit-transform 400ms ease;
+  transition: transform 400ms ease, box-shadow 400ms ease;
+  transition: transform 400ms ease, box-shadow 400ms ease,
+    -webkit-transform 400ms ease;
+}
+
+.image-card:hover {
+  transform: translate(0px, -6px) scale(1.02);
+}

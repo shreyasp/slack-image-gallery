@@ -1,4 +1,4 @@
-import { faHeart } from "@fortawesome/free-solid-svg-icons";
+import { faHeart, faUser } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
 import { Card } from "react-bootstrap";
@@ -12,30 +12,44 @@ export interface IProps {
   altText: string;
   caption: string;
   likes?: number;
+  userName?: string;
   onCardClick?: (event: any) => void;
 }
 
 class ImageCards extends React.Component<IProps, {}> {
   render() {
     return (
-      <Card className="w-1/5 m-4 shadow-lg" onClick={this.props.onCardClick}>
-        <Card.Img
-          id={this.props.imageId}
-          className="img-card-size"
-          variant="top"
-          src={this.props.srcURI}
-        />
-        <Card.ImgOverlay className="relative">
-          <Card.Text>
-            <span className="absolute pin-l pin-t m-2">
-              <FontAwesomeIcon icon={faHeart} />
-              <span className="ml-2 overpass font-semibold items-center">
-                {this.props.likes || 0}
+      <div className="w-1/1 sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/4">
+        <Card
+          className="max-w-sm rounded overflow-hidden shadow-md hover:shadow-lg mx-3 mb-6 image-card"
+          onClick={this.props.onCardClick}
+        >
+          <Card.Img
+            id={this.props.imageId}
+            className="block w-full h-64 object-cover"
+            variant="top"
+            src={this.props.srcURI}
+          />
+          <Card.ImgOverlay className="relative">
+            <Card.Text>
+              <span className="absolute pin-r pin-t m-2">
+                <FontAwesomeIcon icon={faUser} />
+                <span className="ml-2 overpass font-semibold items-center">
+                  {this.props.userName || ""}
+                </span>
               </span>
-            </span>
-          </Card.Text>
-        </Card.ImgOverlay>
-      </Card>
+            </Card.Text>
+            <Card.Text>
+              <span className="absolute pin-l pin-t m-2">
+                <FontAwesomeIcon icon={faHeart} />
+                <span className="ml-2 overpass font-semibold items-center">
+                  {this.props.likes || 0}
+                </span>
+              </span>
+            </Card.Text>
+          </Card.ImgOverlay>
+        </Card>
+      </div>
     );
   }
 }

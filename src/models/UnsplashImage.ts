@@ -13,6 +13,7 @@ export interface UnsplashImage {
   sponsored_impressions_id: string;
   likes: number;
   liked_by_user: boolean;
+  user: UnsplashUser;
 }
 
 export interface UnsplashImageUrls {
@@ -21,4 +22,11 @@ export interface UnsplashImageUrls {
   small: string;
   thumb: string;
   full: string;
+}
+
+export interface UnsplashUser {
+  first_name: string;
+  name: string;
+  last_name: string;
+  username: string;
 }
