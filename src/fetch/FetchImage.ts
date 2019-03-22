@@ -1,7 +1,6 @@
-import axios, { AxiosPromise, AxiosResponse } from 'axios';
-import { reverse, sortBy } from 'lodash';
+import axios from "axios";
 
-import { UnsplashImage } from '../models/UnsplashImage';
+import { UnsplashImage } from "../models/UnsplashImage";
 
 function fetchImages(
   imageCategory: string,
