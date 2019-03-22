@@ -28653,12 +28653,12 @@ code {
   position: absolute;
   z-index: 1080;
   display: block;
-  top: 45%;
+  top: 40%;
   left: 4%;
 }
 
 .next-button {
-  top: 45%;
+  top: 40%;
   left: 90%;
   position: absolute;
   z-index: 1080;

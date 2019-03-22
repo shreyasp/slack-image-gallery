@@ -33,7 +33,7 @@ export interface IState {
   hasLoaded: boolean;
   scrolled: boolean;
   openBox: boolean;
-  currentImage: UnsplashImage | undefined;
+  currentImageIndex: number;
 }
 
 class App extends Component<{}, IState> {
@@ -45,7 +45,7 @@ class App extends Component<{}, IState> {
     hasLoaded: false,
     scrolled: false,
     openBox: false,
-    currentImage: undefined
+    currentImageIndex: -1
   };
 
   onCategorySelect = (event: any) => {
@@ -118,8 +118,16 @@ class App extends Component<{}, IState> {
 
     this.setState({
       openBox: true,
-      currentImage: this.state.images[index]
+      currentImageIndex: index
     });
+  };
+
+  onPrevButtonClicked = (event: any) => {
+    this.setState({ currentImageIndex: this.state.currentImageIndex - 1 });
+  };
+
+  onNextButtonClicked = (event: any) => {
+    this.setState({ currentImageIndex: this.state.currentImageIndex + 1 });
   };
 
   handleScroll = () => {
@@ -176,6 +184,15 @@ class App extends Component<{}, IState> {
   }
 
   render() {
+    const index = this.state.currentImageIndex;
+    const prevButtonHide = {
+      display: index === 0 ? "none" : "block"
+    };
+
+    const nextButtonHide = {
+      display: index === this.state.images.length - 1 ? "none" : "block"
+    };
+
     if (this.state.error) {
       return (
         <div>
@@ -225,7 +242,7 @@ class App extends Component<{}, IState> {
               this.renderCards(image, index)
             )}
           </div>
-          {this.state.openBox && (
+          {this.state.openBox && index !== -1 && (
             <div>
               <Modal
                 show={this.state.openBox}
@@ -235,20 +252,25 @@ class App extends Component<{}, IState> {
               >
                 <Modal.Body>
                   <div>
-                    <Button className="bg-transparent border-transparent prev-button">
-                      <FontAwesomeIcon icon={faChevronLeft} size="2x" />
+                    <Button
+                      className="bg-transparent border-transparent prev-button hover:bg-transparent"
+                      style={prevButtonHide}
+                      onClick={this.onPrevButtonClicked}
+                    >
+                      <FontAwesomeIcon icon={faChevronLeft} size="3x" />
                     </Button>
                     <span>
                       <img
                         className="img-responsive max-w-full max-h-full"
-                        src={
-                          this.state.currentImage &&
-                          this.state.currentImage.urls.full
-                        }
+                        src={this.state.images[index].urls.full}
                       />
                     </span>
-                    <Button className="bg-transparent border-transparent next-button">
-                      <FontAwesomeIcon icon={faChevronRight} size="2x" />
+                    <Button
+                      className="bg-transparent border-transparent next-button hover:bg-transparent"
+                      style={nextButtonHide}
+                      onClick={this.onNextButtonClicked}
+                    >
+                      <FontAwesomeIcon icon={faChevronRight} size="3x" />
                     </Button>
                   </div>
                 </Modal.Body>
