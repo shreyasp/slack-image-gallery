@@ -1,40 +1,31 @@
 import './App.css';
 
-import axios from 'axios';
-import { capitalize, map, reverse, sortBy } from 'lodash';
+import { capitalize, map } from 'lodash';
 import React, { Component } from 'react';
+import { Alert } from 'react-bootstrap';
 
 import { AppNavBar } from './components/AppNavBar';
 import { ImageCards } from './components/ImageCards';
+import { fetchImages } from './fetch/FetchImage';
 import { UnsplashImage } from './models/UnsplashImage';
 
 export interface IState {
   imageCategory: string;
   images: UnsplashImage[];
+  error: Error | undefined;
 }
 
 class App extends Component<{}, IState> {
   state: IState = {
     imageCategory: 'oldest',
-    images: []
+    images: [],
+    error: undefined
   };
 
   componentDidMount() {
-    axios.get(`https://api.unsplash.com/photos`, {
-      headers: {
-        Authorization: `Client-ID ${process.env.REACT_APP_UNSPLASH_ACCESS_KEY}`
-      },
-      params: {
-        order_by: this.state.imageCategory,
-        per_page: 12
-      }
-    })
-      .then(response => response.data)
-      .then(images => {
-        console.log(sortBy(images, 'likes'));
-        this.setState({ images: reverse(sortBy(images, 'likes')) })
-      })
-      .catch(err => console.log(err));
+    fetchImages(this.state.imageCategory)
+      .then(images => this.setState({ images }))
+      .catch(error => this.setState({ error }));
   }
 
   onCategorySelect = (event: any) => {
@@ -43,23 +34,19 @@ class App extends Component<{}, IState> {
     });
   }
 
+  static getDerivedStateFromError(error: Error) {
+    return ({ error });
+  }
+
+  componentDidCatch(error: Error) {
+    this.setState({ error })
+  }
+
   componentDidUpdate(prevProps: any, prevState: IState) {
     if(this.state.imageCategory !== prevState.imageCategory) {
-      axios.get(`https://api.unsplash.com/photos`, {
-      headers: {
-        Authorization: `Client-ID ${process.env.REACT_APP_UNSPLASH_ACCESS_KEY}`
-      },
-      params: {
-        order_by: this.state.imageCategory,
-        per_page: 12
-      }
-    })
-      .then(response => response.data)
-      .then(images => {
-        console.log(sortBy(images, 'likes'));
-        this.setState({ images: reverse(sortBy(images, 'likes')) })
-      })
-      .catch(err => console.log(err));
+      fetchImages(this.state.imageCategory)
+        .then(images => this.setState({ images }))
+        .catch(error => this.setState({ error }));
     }
   }
 
@@ -77,14 +64,35 @@ class App extends Component<{}, IState> {
   }
 
   render() {
-    return (
-      <div className="App">
-        <AppNavBar onSelect={this.onCategorySelect}/>
-            <div className="container-fluid inline-flex flex-wrap">
-              {map(this.state.images, (image, index) => this.renderCards(image, index))}
-            </div>
-      </div>
-    );
+    if(this.state.error) {
+      return (
+        <div>
+          <AppNavBar/>
+          <div>
+            <Alert
+              variant="danger"
+              dismissible={true}
+              className="border border-red-light m-3 px-4 py-3 rounded relative overpass"
+            >
+              {'Something went wrong while trying to fetch images. '}
+              <strong>
+                {`${this.state.error.message}`}
+              </strong>
+            </Alert>
+          </div>
+        </div>
+      )
+    }
+    else {
+      return (
+        <div className="App">
+          <AppNavBar onSelect={this.onCategorySelect}/>
+              <div className="container-fluid inline-flex flex-wrap">
+                {map(this.state.images, (image, index) => this.renderCards(image, index))}
+              </div>
+        </div>
+      );
+    }
   }
 }
 

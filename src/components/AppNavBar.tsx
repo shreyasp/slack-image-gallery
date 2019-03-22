@@ -4,7 +4,7 @@ import { Button, Nav, Navbar, NavDropdown } from 'react-bootstrap';
 import slackLogo from '../slack.svg';
 
 export interface IProps {
-    onSelect: (event: any) => void
+    onSelect?: (event: any) => void
 }
 
 const AppNavBar: React.SFC<IProps> = (props) => {
