@@ -1,7 +1,12 @@
-import axios from 'axios';
+import axios, { AxiosPromise, AxiosResponse } from 'axios';
 import { reverse, sortBy } from 'lodash';
 
-function fetchImages(imageCategory: string, page: number = 1) {
+import { UnsplashImage } from '../models/UnsplashImage';
+
+function fetchImages(
+  imageCategory: string,
+  page: number = 1
+): Promise<UnsplashImage[]> {
   const axiosConfig = {
     headers: {
       Authorization: `Client-ID ${process.env.REACT_APP_UNSPLASH_ACCESS_KEY}`
@@ -16,7 +21,6 @@ function fetchImages(imageCategory: string, page: number = 1) {
   return axios
     .get(`https://api.unsplash.com/photos`, axiosConfig)
     .then(response => response.data)
-    .then(data => reverse(sortBy(data, "likes")))
     .then(images => images)
     .catch(err => {
       throw err;

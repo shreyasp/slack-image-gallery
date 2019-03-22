@@ -1,6 +1,6 @@
 import './App.css';
 
-import { capitalize, map } from 'lodash';
+import { capitalize, clone, map, reverse, sortBy } from 'lodash';
 import React, { Component } from 'react';
 import { Alert } from 'react-bootstrap';
 
@@ -13,39 +13,98 @@ export interface IState {
   imageCategory: string;
   images: UnsplashImage[];
   error: Error | undefined;
+  page: number;
 }
 
 class App extends Component<{}, IState> {
   state: IState = {
     imageCategory: 'oldest',
     images: [],
-    error: undefined
+    error: undefined,
+    page: 1
   };
-
-  componentDidMount() {
-    fetchImages(this.state.imageCategory)
-      .then(images => this.setState({ images }))
-      .catch(error => this.setState({ error }));
-  }
 
   onCategorySelect = (event: any) => {
     this.setState({
-      imageCategory: event.target.id
+      imageCategory: event.target.id,
+      images: [],
+      error: undefined,
+      page: 1
     });
   }
 
-  static getDerivedStateFromError(error: Error) {
-    return ({ error });
-  }
+  componentDidMount() {
+    fetchImages(this.state.imageCategory, this.state.page)
+      .then(fetchedImages => {
+        let { images, page } = clone(this.state)
 
-  componentDidCatch(error: Error) {
-    this.setState({ error })
+        images = images.concat(fetchedImages);
+        images = reverse(sortBy(images, "likes"))
+        page += 1
+
+
+        this.setState({
+          images,
+          page
+        });
+      })
+      .catch(error => this.setState({ error }));
+
+    window.addEventListener('scroll', this.handleScroll);
   }
 
   componentDidUpdate(prevProps: any, prevState: IState) {
     if(this.state.imageCategory !== prevState.imageCategory) {
       fetchImages(this.state.imageCategory)
-        .then(images => this.setState({ images }))
+        .then(fetchedImages => {
+          let { images, page } = clone(this.state)
+
+          images = images.concat(fetchedImages);
+          images = reverse(sortBy(images, "likes"))
+          page += 1
+
+          this.setState({
+            images,
+            page
+          });
+        })
+        .catch(error => this.setState({ error }));
+    }
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('scroll', this.handleScroll);
+  }
+
+  handleScroll = () => {
+    var scrollTop = (
+      (
+        document.documentElement && document.documentElement.scrollTop
+      ) || document.body.scrollTop
+    );
+
+    var scrollHeight = (
+      (
+        document.documentElement && document.documentElement.scrollHeight
+      ) || document.body.scrollHeight
+    );
+    var clientHeight = document.documentElement.clientHeight || window.innerHeight;
+    var scrolledToBottom = Math.ceil(scrollTop + clientHeight) >= scrollHeight;
+
+    if(scrolledToBottom) {
+      fetchImages(this.state.imageCategory, this.state.page)
+        .then(fetchedImages => {
+          let { images, page } = clone(this.state)
+
+          images = images.concat(fetchedImages);
+          images = reverse(sortBy(images, "likes"))
+          page += 1
+
+          this.setState({
+            images,
+            page
+          });
+        })
         .catch(error => this.setState({ error }));
     }
   }
@@ -53,7 +112,7 @@ class App extends Component<{}, IState> {
   renderCards(image: UnsplashImage, index: number) {
     return(
       <ImageCards
-        key={image.id}
+        key={`${image.id}-${index}`}
         index={index}
         srcURI={image.urls.small}
         altText={capitalize(image.alt_description)}
@@ -87,7 +146,7 @@ class App extends Component<{}, IState> {
       return (
         <div className="App">
           <AppNavBar onSelect={this.onCategorySelect}/>
-              <div className="container-fluid inline-flex flex-wrap">
+              <div className="items-center content-center container-fluid inline-flex flex-wrap">
                 {map(this.state.images, (image, index) => this.renderCards(image, index))}
               </div>
         </div>
