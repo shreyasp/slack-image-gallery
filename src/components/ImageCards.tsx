@@ -21,7 +21,7 @@ class ImageCards extends React.Component<IProps, {}> {
     return (
       <div className="w-1/1 sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/4">
         <Card
-          className="max-w-sm rounded overflow-hidden shadow-md hover:shadow-lg mx-3 mb-6 image-card"
+          className="max-w-sm rounded overflow-hidden border-none mx-3 mb-6 image-card"
           onClick={this.props.onCardClick}
         >
           <Card.Img
@@ -32,15 +32,14 @@ class ImageCards extends React.Component<IProps, {}> {
           />
           <Card.ImgOverlay className="relative text-grey-darker">
             <Card.Text>
-              <span className="absolute pin-l pin-t m-2">
-                <FontAwesomeIcon icon={faUser} />
-                <span className="ml-2 roboto font-normal text-grey-darker items-center">
-                  {this.props.userName || ""}
+              <span className="absolute pin-l pin-t mt-1">
+                <span className="roboto font-normal text-grey-darker items-center">
+                  By {this.props.userName || ""}
                 </span>
               </span>
             </Card.Text>
             <Card.Text>
-              <span className="absolute pin-r pin-t m-2">
+              <span className="absolute pin-r pin-t mt-1">
                 <FontAwesomeIcon icon={faHeart} className="grey-darker" />
                 <span className="ml-2 roboto font-normal text-grey-darker items-center">
                   {this.props.likes || 0}

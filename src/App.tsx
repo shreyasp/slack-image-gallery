@@ -29,7 +29,7 @@ export interface IState {
 
 class App extends Component<{}, IState> {
   state: IState = {
-    imageCategory: "oldest",
+    imageCategory: "popular",
     images: [],
     error: undefined,
     page: 1,
@@ -153,9 +153,11 @@ class App extends Component<{}, IState> {
           });
         })
         .catch(error => this.setState({ error }));
-    } else if (!scrollTop) {
-      this.setState({ scrolled: false });
     }
+    // Show Overlay Back to Top button while you we reach client max window height
+    else if (scrollTop >= clientHeight) this.setState({ scrolled: true });
+    // Hide once you reach back on Top
+    else if (!scrollTop) this.setState({ scrolled: false });
   };
 
   modalClosed = () => {
@@ -209,9 +211,10 @@ class App extends Component<{}, IState> {
         </div>
       );
     } else {
+      const layoutHeight =
+        document.documentElement.clientHeight === document.body.scrollHeight;
       const buttonDisplay = {
-        display:
-          this.state.scrolled || document.body.scrollTop ? "block" : "none"
+        display: this.state.scrolled || layoutHeight ? "block" : "none"
       };
       return (
         <div className="App">
