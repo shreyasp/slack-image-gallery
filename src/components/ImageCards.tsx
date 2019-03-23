@@ -30,19 +30,19 @@ class ImageCards extends React.Component<IProps, {}> {
             variant="top"
             src={this.props.srcURI}
           />
-          <Card.ImgOverlay className="relative">
+          <Card.ImgOverlay className="relative text-grey-darker">
             <Card.Text>
-              <span className="absolute pin-r pin-t m-2">
+              <span className="absolute pin-l pin-t m-2">
                 <FontAwesomeIcon icon={faUser} />
-                <span className="ml-2 overpass font-semibold items-center">
+                <span className="ml-2 roboto font-normal text-grey-darker items-center">
                   {this.props.userName || ""}
                 </span>
               </span>
             </Card.Text>
             <Card.Text>
-              <span className="absolute pin-l pin-t m-2">
-                <FontAwesomeIcon icon={faHeart} />
-                <span className="ml-2 overpass font-semibold items-center">
+              <span className="absolute pin-r pin-t m-2">
+                <FontAwesomeIcon icon={faHeart} className="grey-darker" />
+                <span className="ml-2 roboto font-normal text-grey-darker items-center">
                   {this.props.likes || 0}
                 </span>
               </span>

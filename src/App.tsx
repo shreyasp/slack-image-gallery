@@ -2,8 +2,6 @@ import "./App.css";
 
 import {
   faAngleDoubleUp,
-  faChevronLeft,
-  faChevronRight,
   faExclamationCircle
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -14,6 +12,7 @@ import { BeatLoader } from "react-spinners";
 
 import { AppNavBar } from "./components/AppNavBar";
 import { ImageCards } from "./components/ImageCards";
+import { Lightbox } from "./components/Lightbox";
 import { fetchImages } from "./fetch/FetchImage";
 import { UnsplashImage } from "./models/UnsplashImage";
 
@@ -115,13 +114,15 @@ class App extends Component<{}, IState> {
     });
   };
 
-  onPrevButtonClicked = () => {
-    this.setState({ currentImageIndex: this.state.currentImageIndex - 1 });
+  onButtonClicked = (event: any) => {
+    if (event.target.id !== "prev") {
+      this.setState({ currentImageIndex: this.state.currentImageIndex - 1 });
+    } else {
+      this.setState({ currentImageIndex: this.state.currentImageIndex + 1 });
+    }
   };
 
-  onNextButtonClicked = () => {
-    this.setState({ currentImageIndex: this.state.currentImageIndex + 1 });
-  };
+  onNextButtonClicked = () => {};
 
   handleScroll = () => {
     let scrollTop =
@@ -194,7 +195,7 @@ class App extends Component<{}, IState> {
         <div>
           <AppNavBar />
           <div>
-            <Alert className="text-black border-l-4 border-red-light m-3 px-4 py-3 relative overpass">
+            <Alert className="text-black border-l-4 border-red-light m-3 px-4 py-3 relative roboto">
               <FontAwesomeIcon className="mr-2" icon={faExclamationCircle} />
               {"Something went wrong while trying to fetch images. "}
               <strong>{`${this.state.error.message}`}</strong>
@@ -225,13 +226,13 @@ class App extends Component<{}, IState> {
         <div className="App">
           <AppNavBar onSelect={this.onCategorySelect} />
           <div>
-            <Button
-              className="overlay-button bg-black rounded-full h-16 w-16 flex items-center justify-center"
+            <button
+              className="overlay-button text-white bg-black rounded-full h-16 w-16 flex items-center justify-center"
               style={buttonDisplay}
               onClick={this.scrollToTop}
             >
               <FontAwesomeIcon icon={faAngleDoubleUp} />
-            </Button>
+            </button>
           </div>
           <div className="w-full lg:max-w-3xl mx-auto flex flex-wrap px-3 mt-6">
             {map(this.state.images, (image, index) =>
@@ -239,39 +240,13 @@ class App extends Component<{}, IState> {
             )}
           </div>
           {this.state.openBox && index !== -1 && (
-            <div>
-              <Modal
-                show={this.state.openBox}
-                onHide={this.modalClosed}
-                centered={true}
-                size="lg"
-              >
-                <Modal.Body>
-                  <div>
-                    <Button
-                      className="bg-grey-light border-transparent prev-button hover:bg-grey-dark"
-                      style={prevButtonHide}
-                      onClick={this.onPrevButtonClicked}
-                    >
-                      <FontAwesomeIcon icon={faChevronLeft} size="3x" />
-                    </Button>
-                    <span>
-                      <img
-                        className="img-responsive max-w-full max-h-full"
-                        src={this.state.images[index].urls.full}
-                      />
-                    </span>
-                    <Button
-                      className="bg-grey-light border-transparent next-button hover:bg-grey-dark"
-                      style={nextButtonHide}
-                      onClick={this.onNextButtonClicked}
-                    >
-                      <FontAwesomeIcon icon={faChevronRight} size="3x" />
-                    </Button>
-                  </div>
-                </Modal.Body>
-              </Modal>
-            </div>
+            <Lightbox
+              openBox={this.state.openBox}
+              images={this.state.images}
+              index={index}
+              onButtonClicked={this.onButtonClicked}
+              onClosed={this.modalClosed}
+            />
           )}
         </div>
       );
