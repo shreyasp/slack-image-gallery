@@ -28626,8 +28626,9 @@ code {
 }
 
 /* Custom CSS */
-.roboto {
-  font-family: "Roboto", sans-serif;
+.unslack-font {
+  font-family: "Rubik", sans-serif;
+  font-size: 0.9rem;
 }
 
 .img-card-size {
@@ -28681,4 +28682,21 @@ code {
 
 .nav-bar-bg {
   background-color: #282828;
+}
+
+.app-bg {
+  background-color: #f9f9f9;
+}
+
+.likes {
+  font-size: 0.8rem;
+}
+.likes-heart {
+  width: 10px;
+  height: auto;
+}
+
+.likes,
+.user-name {
+  color: #282828;
 }

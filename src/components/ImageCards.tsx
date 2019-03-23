@@ -19,7 +19,7 @@ export interface IProps {
 class ImageCards extends React.Component<IProps, {}> {
   render() {
     return (
-      <div className="w-1/1 sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/4">
+      <div className="w-1/1 sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/4 my-3">
         <Card
           className="max-w-sm rounded overflow-hidden border-none mx-3 mb-6 image-card"
           onClick={this.props.onCardClick}
@@ -32,16 +32,17 @@ class ImageCards extends React.Component<IProps, {}> {
           />
           <Card.ImgOverlay className="relative text-grey-darker">
             <Card.Text>
-              <span className="absolute pin-l pin-t mt-1">
-                <span className="roboto font-normal text-grey-darker items-center">
-                  By {this.props.userName || ""}
+              <span className="absolute pin-l pin-t ml-2 mt-2 user-name">
+                <span className="unslack-font font-normal items-center">
+                  {`By ${this.props.userName}` || ""}
                 </span>
               </span>
-            </Card.Text>
-            <Card.Text>
-              <span className="absolute pin-r pin-t mt-1">
-                <FontAwesomeIcon icon={faHeart} className="grey-darker" />
-                <span className="ml-2 roboto font-normal text-grey-darker items-center">
+              <span className="absolute pin-r pin-t mr-2 mt-2">
+                <FontAwesomeIcon
+                  icon={faHeart}
+                  className="text-red-light likes-heart"
+                />
+                <span className="unslack-font ml-1 font-normal items-center likes">
                   {this.props.likes || 0}
                 </span>
               </span>

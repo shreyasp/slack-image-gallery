@@ -52,7 +52,7 @@ class Lightbox extends React.Component<IProps, {}> {
           <Modal.Body className="min-w-full">
             <button
               id="prev"
-              className="prev-button text-black border-transparent hover:transparent"
+              className="prev-button text-grey"
               style={prevButtonHide}
               onClick={this.onPrevButtonClicked}
             >
@@ -65,7 +65,7 @@ class Lightbox extends React.Component<IProps, {}> {
               />
             </span>
             <button
-              className="next-button text-black border-transparent hover:transparent"
+              className="next-button text-grey shadow"
               style={nextButtonHide}
               onClick={this.onNextButtonClicked}
             >

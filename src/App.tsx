@@ -185,10 +185,10 @@ class App extends Component<{}, IState> {
 
     if (this.state.error) {
       return (
-        <div>
+        <div className="App app-bg">
           <AppNavBar />
           <div>
-            <Alert className="text-black border-l-4 border-red-light m-3 px-4 py-3 relative roboto">
+            <Alert className="text-black border-l-4 border-red-light m-3 px-4 py-3 relative unslack-font">
               <FontAwesomeIcon className="mr-2" icon={faExclamationCircle} />
               {"Something went wrong while trying to fetch images. "}
               <strong>{`${this.state.error.message}`}</strong>
@@ -198,7 +198,7 @@ class App extends Component<{}, IState> {
       );
     } else if (!this.state.hasLoaded) {
       return (
-        <div>
+        <div className="App app-bg">
           <AppNavBar />
           <span className="centered">
             <BeatLoader
@@ -217,7 +217,7 @@ class App extends Component<{}, IState> {
         display: this.state.scrolled || layoutHeight ? "block" : "none"
       };
       return (
-        <div className="App">
+        <div className="App app-bg">
           <AppNavBar onSelect={this.onCategorySelect} />
           <div>
             <button

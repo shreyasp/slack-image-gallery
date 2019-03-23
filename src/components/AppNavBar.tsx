@@ -8,8 +8,8 @@ export interface IProps {
 
 const AppNavBar: React.SFC<IProps> = props => {
   return (
-    <nav className="flex bg-black px-4 py-3 sticky-top roboto">
-      <div className="flex items-start text-white m-auto md:mr-6">
+    <nav className="flex bg-black px-4 py-3 sticky-top unslack-font">
+      <div className="flex items-start text-white px-4 ml-5 md:mr-6">
         <img
           className="fill-current mr-2"
           height={40}
