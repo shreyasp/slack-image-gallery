@@ -28649,20 +28649,22 @@ code {
   right: 30px;
 }
 
-.prev-button {
+.prev-button,
+.next-button {
+  cursor: pointer;
   position: absolute;
   z-index: 1080;
   display: block;
-  top: 40%;
-  left: 4%;
+  top: 45%;
+  width: auto;
+}
+
+.prev-button {
+  left: 5%;
 }
 
 .next-button {
-  top: 40%;
-  left: 90%;
-  position: absolute;
-  z-index: 1080;
-  display: block;
+  right: 5%;
 }
 
 .image-card {

@@ -4,7 +4,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
-import { Modal } from "react-bootstrap";
+import { Button, Modal } from "react-bootstrap";
 
 import { UnsplashImage } from "../models/UnsplashImage";
 
@@ -12,16 +12,25 @@ export interface IProps {
   openBox: boolean;
   images: UnsplashImage[];
   index: number;
-  onButtonClicked: (event: any) => void;
-  onClosed: (closed: boolean) => void;
+  onButtonClicked: (name: string) => void;
+  onClosed: () => void;
 }
 
 class Lightbox extends React.Component<IProps, {}> {
   modalClosed = () => {
-    this.props.onClosed(true);
+    this.props.onClosed();
+  };
+
+  onPrevButtonClicked = () => {
+    this.props.onButtonClicked("prev");
+  };
+
+  onNextButtonClicked = () => {
+    this.props.onButtonClicked("next");
   };
 
   render() {
+    let { index } = this.props;
     const prevButtonHide = {
       display: this.props.index === 0 ? "none" : "block"
     };
@@ -38,33 +47,30 @@ class Lightbox extends React.Component<IProps, {}> {
           onHide={this.modalClosed}
           centered={true}
           size="lg"
-          className="min-w-full"
+          className=""
         >
-          <Modal.Body>
-            <React.Fragment>
-              <button
-                id="prev"
-                className="text-black border-transparent prev-button hover:transparent"
-                style={prevButtonHide}
-                onClick={this.props.onButtonClicked}
-              >
-                <FontAwesomeIcon icon={faChevronCircleLeft} size="3x" />
-              </button>
-              <span>
-                <img
-                  className="img-responsive max-w-full max-h-full"
-                  src={this.props.images[this.props.index].urls.full}
-                />
-              </span>
-              <button
-                id="next"
-                className="text-black border-transparent next-button hover:transparent"
-                style={nextButtonHide}
-                onClick={this.props.onButtonClicked}
-              >
-                <FontAwesomeIcon icon={faChevronCircleRight} size="3x" />
-              </button>
-            </React.Fragment>
+          <Modal.Body className="min-w-full">
+            <button
+              id="prev"
+              className="prev-button text-black border-transparent hover:transparent"
+              style={prevButtonHide}
+              onClick={this.onPrevButtonClicked}
+            >
+              <FontAwesomeIcon icon={faChevronCircleLeft} size="3x" />
+            </button>
+            <span>
+              <img
+                className="img-responsive w-full h-full"
+                src={this.props.images[index].urls.full}
+              />
+            </span>
+            <button
+              className="next-button text-black border-transparent hover:transparent"
+              style={nextButtonHide}
+              onClick={this.onNextButtonClicked}
+            >
+              <FontAwesomeIcon icon={faChevronCircleRight} size="3x" />
+            </button>
           </Modal.Body>
         </Modal>
       </React.Fragment>

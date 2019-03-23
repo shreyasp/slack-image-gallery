@@ -7,7 +7,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { capitalize, clone, findIndex, isEqual, map } from "lodash";
 import React, { Component } from "react";
-import { Alert, Button, Modal } from "react-bootstrap";
+import { Alert } from "react-bootstrap";
 import { BeatLoader } from "react-spinners";
 
 import { AppNavBar } from "./components/AppNavBar";
@@ -114,15 +114,13 @@ class App extends Component<{}, IState> {
     });
   };
 
-  onButtonClicked = (event: any) => {
-    if (event.target.id !== "prev") {
+  onButtonClicked = (buttonName: string) => {
+    if (buttonName === "prev") {
       this.setState({ currentImageIndex: this.state.currentImageIndex - 1 });
     } else {
       this.setState({ currentImageIndex: this.state.currentImageIndex + 1 });
     }
   };
-
-  onNextButtonClicked = () => {};
 
   handleScroll = () => {
     let scrollTop =
@@ -182,13 +180,6 @@ class App extends Component<{}, IState> {
 
   render() {
     const index = this.state.currentImageIndex;
-    const prevButtonHide = {
-      display: index === 0 ? "none" : "block"
-    };
-
-    const nextButtonHide = {
-      display: index === this.state.images.length - 1 ? "none" : "block"
-    };
 
     if (this.state.error) {
       return (
