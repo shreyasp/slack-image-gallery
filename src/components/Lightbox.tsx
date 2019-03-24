@@ -65,7 +65,7 @@ class Lightbox extends React.Component<IProps, {}> {
               />
             </span>
             <button
-              className="next-button text-grey shadow"
+              className="next-button text-grey"
               style={nextButtonHide}
               onClick={this.onNextButtonClicked}
             >

@@ -2,11 +2,7 @@ import React from "react";
 
 import slackLogo from "../Unslack.png";
 
-export interface IProps {
-  onSelect?: (event: any) => void;
-}
-
-const AppNavBar: React.SFC<IProps> = props => {
+const AppNavBar: React.SFC<{}> = props => {
   return (
     <nav className="flex bg-black px-4 py-3 sticky-top unslack-font">
       <div className="flex items-start text-white px-4 ml-5 md:mr-6">

@@ -5,7 +5,7 @@ import {
   faExclamationCircle
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { capitalize, clone, findIndex, isEqual, map } from "lodash";
+import { capitalize, clone, findIndex, map, sample } from "lodash";
 import React, { Component } from "react";
 import { Alert } from "react-bootstrap";
 import { BeatLoader } from "react-spinners";
@@ -17,7 +17,6 @@ import { fetchImages } from "./fetch/FetchImage";
 import { UnsplashImage } from "./models/UnsplashImage";
 
 export interface IState {
-  imageCategory: string;
   images: UnsplashImage[];
   error: Error | undefined;
   page: number;
@@ -27,9 +26,10 @@ export interface IState {
   currentImageIndex: number;
 }
 
+const IMAGECATEGORY: string[] = ["popular", "latest", "oldest"];
+
 class App extends Component<{}, IState> {
   state: IState = {
-    imageCategory: "popular",
     images: [],
     error: undefined,
     page: 1,
@@ -39,19 +39,8 @@ class App extends Component<{}, IState> {
     currentImageIndex: -1
   };
 
-  onCategorySelect = (event: any) => {
-    this.setState({
-      imageCategory: event.target.id,
-      images: [],
-      error: undefined,
-      page: 1,
-      hasLoaded: false,
-      scrolled: false
-    });
-  };
-
   componentDidMount() {
-    fetchImages(this.state.imageCategory, this.state.page)
+    fetchImages(sample(IMAGECATEGORY), this.state.page)
       .then(fetchedImages => {
         let { images, page } = clone(this.state);
 
@@ -68,30 +57,6 @@ class App extends Component<{}, IState> {
       .catch(error => this.setState({ error }));
 
     window.addEventListener("scroll", this.handleScroll);
-  }
-
-  componentDidUpdate(prevProps: any, prevState: IState) {
-    if (
-      (this.state.imageCategory !== prevState.imageCategory ||
-        !isEqual(this.state.images, prevState.images)) &&
-      !this.state.hasLoaded
-    ) {
-      fetchImages(this.state.imageCategory)
-        .then(fetchedImages => {
-          let { images, page } = clone(this.state);
-
-          images = images.concat(fetchedImages);
-          images = images;
-          page += 1;
-
-          this.setState({
-            images,
-            page,
-            hasLoaded: true
-          });
-        })
-        .catch(error => this.setState({ error }));
-    }
   }
 
   componentWillUnmount() {
@@ -137,7 +102,7 @@ class App extends Component<{}, IState> {
     let scrolledToBottom = Math.ceil(scrollTop + clientHeight) >= scrollHeight;
 
     if (scrolledToBottom) {
-      fetchImages(this.state.imageCategory, this.state.page)
+      fetchImages(sample(IMAGECATEGORY), this.state.page)
         .then(fetchedImages => {
           let { images, page } = clone(this.state);
 
@@ -218,7 +183,7 @@ class App extends Component<{}, IState> {
       };
       return (
         <div className="App app-bg">
-          <AppNavBar onSelect={this.onCategorySelect} />
+          <AppNavBar />
           <div>
             <button
               className="overlay-button text-white bg-black rounded-full h-16 w-16 flex items-center justify-center"
@@ -233,6 +198,18 @@ class App extends Component<{}, IState> {
               this.renderCards(image, index)
             )}
           </div>
+          {!this.state.hasLoaded && this.state.scrolled && (
+            <div>
+              <span className="centered">
+                <BeatLoader
+                  loading={!this.state.hasLoaded}
+                  sizeUnit={"px"}
+                  size={20}
+                  color={"#22292f"}
+                />
+              </span>
+            </div>
+          )}
           {this.state.openBox && index !== -1 && (
             <Lightbox
               openBox={this.state.openBox}

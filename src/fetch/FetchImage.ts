@@ -3,7 +3,7 @@ import axios from "axios";
 import { UnsplashImage } from "../models/UnsplashImage";
 
 function fetchImages(
-  imageCategory: string,
+  imageCategory: string | undefined,
   page: number = 1
 ): Promise<UnsplashImage[]> {
   const axiosConfig = {
@@ -17,13 +17,19 @@ function fetchImages(
     }
   };
 
-  return axios
-    .get(`https://api.unsplash.com/photos`, axiosConfig)
-    .then(response => response.data)
-    .then(images => images)
-    .catch(err => {
-      throw err;
+  if (!!imageCategory) {
+    return axios
+      .get(`https://api.unsplash.com/photos`, axiosConfig)
+      .then(response => response.data)
+      .then(images => images)
+      .catch(err => {
+        throw err;
+      });
+  } else {
+    return Promise.reject({
+      msg: "No Category provided"
     });
+  }
 }
 
 export { fetchImages };
