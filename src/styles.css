@@ -28669,6 +28669,7 @@ code {
 }
 
 .image-card {
+  object-fit: cover;
   -webkit-transition: box-shadow 400ms ease, -webkit-transform 400ms ease;
   transition: box-shadow 400ms ease, -webkit-transform 400ms ease;
   transition: transform 400ms ease, box-shadow 400ms ease;
